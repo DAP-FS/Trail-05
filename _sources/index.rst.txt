@@ -1,0 +1,961 @@
+CFG and PDA: Complete Visual Guide for Beginners
+==================================================
+
+.. contents:: Navigation
+   :local:
+   :depth: 3
+
+----
+
+📚 Introduction: What Are PDAs?
+================================
+
+Imagine you're at a library. A librarian can check books IN and OUT. But a **simple counter** (like a Finite Automaton) can't remember what books are currently inside!
+
+A **Pushdown Automaton (PDA)** is like a librarian with a **notepad (stack)** that writes down what's inside. This memory lets the PDA do **amazing things** that simple machines cannot.
+
+.. admonition:: 💡 Key Idea
+   :class: tip
+
+   **PDA = Finite Automaton + Stack Memory**
+
+   Think of the stack like a **stack of plates**: you can only add or remove from the **TOP**, not the bottom!
+
+----
+
+Why Do We Need PDAs?
+=====================
+
+**Finite Automata Limitation**
+------------------------------
+
+Let's try to check if parentheses are balanced: ``((3 + 5) * 2)``
+
+❌ **Finite Automaton FAILS** because it has no memory!
+
+- Sees first ``(`` → can't remember it
+- Sees second ``(`` → can't remember TWO opening brackets
+- Sees `)` → doesn't know how many to match!
+
+✅ **PDA WORKS** because it has a stack!
+
+- Sees ``(`` → Push to stack
+- Sees ``)`` → Pop from stack
+- Stack empty at end? → Accept!
+
+.. graphviz::
+   :align: center
+   :caption: FA Cannot Remember, PDA Can
+
+   digraph capability {
+       rankdir=LR;
+       node [shape=box, style="rounded,filled", fillcolor=wheat];
+       edge [fontsize=10];
+       
+       task [label="Task: Check\nBalanced\nParentheses", fillcolor=lightcyan];
+       fa [label="Finite\nAutomaton", fillcolor=lightcoral];
+       pda [label="Pushdown\nAutomaton", fillcolor=lightgreen];
+       
+       task -> fa [label="✗ FAIL"];
+       task -> pda [label="✓ WORKS"];
+   }
+
+----
+
+PDA Components Explained Simply
+================================
+
+A PDA is defined as: :math:`M = (Q, \Sigma, \Gamma, \delta, q_0, Z_0, F)`
+
+Let's break it down like building blocks:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 15 25 60
+
+   * - Symbol
+     - Name
+     - Explanation (Simple)
+   * - :math:`Q`
+     - States
+     - Like rooms in a house. You move between them.
+   * - :math:`\Sigma`
+     - Input alphabet
+     - Symbols you READ from the input string (e.g., 'a', 'b', '(', ')')
+   * - :math:`\Gamma`
+     - Stack alphabet
+     - Symbols you can WRITE on the stack (often :math:`Z_0`, 'a', 'b')
+   * - :math:`\delta`
+     - Transition function
+     - Rules: "If in state q, read symbol 'a', stack top is 'X', then..."
+   * - :math:`q_0`
+     - Start state
+     - The first room you enter
+   * - :math:`Z_0`
+     - Initial stack symbol
+     - Stack starts with this symbol (usually represents "empty")
+   * - :math:`F`
+     - Accept states
+     - Final rooms where you WIN (input accepted)
+
+**Example Values:**
+
+- :math:`Q = \{q_0, q_1, q_2\}` → 3 states
+- :math:`\Sigma = \{a, b\}` → Input is just 'a' or 'b'
+- :math:`\Gamma = \{Z_0, a\}` → Stack can have :math:`Z_0` or 'a'
+
+----
+
+Stack Operations: The Core Mechanic
+====================================
+
+**What is a Stack?**
+
+Imagine stacking plates. You can:
+
+1. **PUSH**: Add a plate on top
+2. **POP**: Remove the top plate
+3. **PEEK**: Look at what's on top (don't remove)
+
+.. graphviz::
+   :align: center
+   :caption: Stack Operations
+
+   digraph stack_ops {
+       rankdir=LR;
+       node [shape=record, style=filled, fillcolor=lightyellow];
+       edge [fontsize=10];
+       
+       stack1 [label="{ Start | { Z₀ } }"];
+       stack2 [label="{ Push 'a' | { a | Z₀ } }"];
+       stack3 [label="{ Push 'a' | { a | a | Z₀ } }"];
+       stack4 [label="{ Pop 'a' | { a | Z₀ } }"];
+       stack5 [label="{ Pop 'a' | { Z₀ } }", fillcolor=lightgreen];
+       
+       stack1 -> stack2 -> stack3 -> stack4 -> stack5;
+   }
+
+**Transition Notation:**
+
+When we write: :math:`\delta(q, a, X) \to (p, YZ)`
+
+This means:
+- **Current state**: q
+- **Read input**: a
+- **Stack top**: X
+- **New state**: p
+- **Stack action**: Pop X, Push Y then Z
+
+----
+
+🎯 Example 1: PDA for :math:`L = \{a^nb^n \mid n \geq 1\}`
+=============================================================
+
+**What is this language?**
+
+Equal number of 'a's followed by equal number of 'b's:
+
+- ✓ ``ab`` (1 a, 1 b)
+- ✓ ``aabb`` (2 a's, 2 b's)
+- ✓ ``aaabbb`` (3 a's, 3 b's)
+- ✗ ``aab`` (2 a's, 1 b) - NOT EQUAL
+- ✗ ``baa`` (b before a) - WRONG ORDER
+
+**Strategy to Build PDA:**
+
+1. **Reading a's phase**: PUSH each 'a' to stack
+2. **Reading b's phase**: POP for each 'b'
+3. **Accept condition**: Stack empty when input ends
+
+**The PDA Design:**
+
+.. graphviz::
+   :align: center
+   :caption: PDA for aⁿbⁿ - Color Coded States
+
+   digraph pda_anbn {
+       rankdir=LR;
+       node [shape=circle, style=filled];
+       edge [fontsize=11];
+       
+       qi [shape=point, style=none];
+       q0 [label="q₀", fillcolor=lightgreen, tooltip="START"];
+       q1 [label="q₁", fillcolor=lightyellow, tooltip="READING"];
+       q2 [label="q₂", shape=doublecircle, fillcolor=lightcoral, tooltip="ACCEPT"];
+       
+       qi -> q0;
+       q0 -> q1 [label="a, Z₀ → aZ₀\n(First 'a')"];
+       q1 -> q1 [label="a, a → aa\n(Push more)"];
+       q1 -> q1 [label="b, a → ε\n(Pop for 'b')", style=dashed];
+       q1 -> q2 [label="ε, Z₀ → Z₀\n(Accept)", color=green];
+   }
+
+**Line-by-Line Explanation:**
+
+.. list-table::
+   :header-rows: 1
+   :widths: 10 15 15 30 30
+
+   * - Step
+     - State
+     - Input
+     - Stack Top
+     - Action → New Stack
+   * - 1
+     - :math:`q_0`
+     - Read 'a'
+     - :math:`Z_0`
+     - Push 'a' → :math:`aZ_0`
+   * - 2
+     - :math:`q_1`
+     - Read 'a'
+     - 'a'
+     - Push 'a' → :math:`aaZ_0`
+   * - 3
+     - :math:`q_1`
+     - Read 'b'
+     - 'a'
+     - Pop 'a' → :math:`aZ_0`
+   * - 4
+     - :math:`q_1`
+     - Read 'b'
+     - 'a'
+     - Pop 'a' → :math:`Z_0`
+   * - 5
+     - :math:`q_1`
+     - No more input
+     - :math:`Z_0`
+     - Move to :math:`q_2` → ACCEPT!
+
+**Complete Trace for "aabb":**
+
+.. code-block:: text
+
+   Configuration                Input Remaining    Stack
+   ═════════════════════════════════════════════════════════════
+   Start: (q₀, "aabb", Z₀)           aabb             [Z₀]
+   Step 1: (q₁, "abb", Z₀)            abb              [aZ₀]
+   Step 2: (q₁, "bb", Z₀)              bb              [aaZ₀]
+   Step 3: (q₁, "b", Z₀)               b               [aZ₀]
+   Step 4: (q₁, ε, Z₀)                 ε               [Z₀]
+   Step 5: (q₂, ε, Z₀)                 ε               [Z₀]  ✓ ACCEPT
+
+**Rejected Trace for "aab":**
+
+.. code-block:: text
+
+   Configuration                Input Remaining    Stack
+   ═════════════════════════════════════════════════════════════
+   Start: (q₀, "aab", Z₀)           aab              [Z₀]
+   Step 1: (q₁, "ab", Z₀)            ab               [aZ₀]
+   Step 2: (q₁, "b", Z₀)              b               [aaZ₀]
+   Step 3: (q₁, ε, Z₀)                ε               [aZ₀]  ← Stack NOT empty!
+   Result: (q₁, ε, Z₀)                                ✗ REJECT
+
+.. admonition:: 🔑 Learn This!
+   :class: important
+
+   **The key insight**: We need **exactly** as many pops as pushes. If one is left over, reject!
+
+----
+
+🎯 Example 2: PDA for Balanced Parentheses
+=============================================
+
+**Language**: Strings with properly nested parentheses
+
+- ✓ ``()``
+- ✓ ``(())``
+- ✓ ``()(())``
+- ✗ ``)(`` - Wrong order
+- ✗ ``(()`` - Missing closing
+
+**Strategy:**
+
+1. Push '(' to stack
+2. For each ')', pop a '('
+3. Stack empty at end = balanced!
+
+.. graphviz::
+   :align: center
+   :caption: PDA for Balanced Parentheses
+
+   digraph balanced_parens {
+       rankdir=LR;
+       node [shape=circle, style=filled];
+       
+       qi [shape=point, style=none];
+       q0 [label="q₀", fillcolor=lightgreen];
+       q1 [label="q₁", fillcolor=lightyellow];
+       q2 [label="q₂", shape=doublecircle, fillcolor=lightcoral];
+       
+       qi -> q0;
+       q0 -> q1 [label="(, Z₀ → (Z₀"];
+       q1 -> q1 [label="(, ( → (("];
+       q1 -> q1 [label="), ( → ε"];
+       q1 -> q2 [label="ε, Z₀ → Z₀"];
+   }
+
+**Trace for "(())":**
+
+.. code-block:: text
+
+   (q₀, "(())", Z₀)
+     → (q₁, "())", (Z₀)
+     → (q₁, ")", ((Z₀)      [pushed another (]
+     → (q₁, ")", (Z₀)       [popped one (]
+     → (q₁, ε, Z₀)          [popped final (]
+     → (q₂, ε, Z₀)          ✓ ACCEPT
+
+----
+
+🎯 Example 3: PDA for Palindromes :math:`a^nb^na^n`
+=====================================================
+
+**Language**: a's, then b's, then same number of a's again
+
+- ✓ ``aba`` (1 a, 1 b, 1 a)
+- ✓ ``aabbaa`` (2 a's, 2 b's, 2 a's)
+- ✗ ``aba`` → wait, that's only 2 a's total, not 1+1
+- Actually: ✓ ``aba``, ✓ ``aabbaa``, ✓ ``aaabbbaaa``
+
+**Strategy:**
+
+1. Push for each first group of 'a's
+2. Read b's (don't change stack)
+3. Pop for each final group of 'a's
+4. Stack empty = palindrome!
+
+.. graphviz::
+   :align: center
+   :caption: PDA for aⁿbⁿaⁿ
+
+   digraph palindrome {
+       rankdir=LR;
+       node [shape=circle, style=filled];
+       
+       qi [shape=point, style=none];
+       q0 [label="q₀\n(Push a's)", fillcolor=lightgreen];
+       q1 [label="q₁\n(Read b's)", fillcolor=lightyellow];
+       q2 [label="q₂\n(Pop a's)", fillcolor=lightblue];
+       q3 [label="q₃", shape=doublecircle, fillcolor=lightcoral];
+       
+       qi -> q0;
+       q0 -> q0 [label="a, a → aa\na, Z₀ → aZ₀"];
+       q0 -> q1 [label="b, a → a\nε (transition)"];
+       q1 -> q1 [label="b, a → a"];
+       q1 -> q2 [label="ε, a → a\n(switch)"];
+       q2 -> q2 [label="a, a → ε"];
+       q2 -> q3 [label="ε, Z₀ → Z₀"];
+   }
+
+----
+
+🎯 Example 4: PDA for :math:`L = \{a^nb^{2n} \mid n \geq 1\}`
+==============================================================
+
+**What is this?**
+
+For every 'a', there are **2 b's**
+
+- ✓ ``abb`` (1 a, 2 b's)
+- ✓ ``aabbbb`` (2 a's, 4 b's)
+- ✗ ``abbb`` (1 a, 3 b's) - Not 2× number of a's
+
+**Key Difference**: For each 'a', we push **TWO** symbols!
+
+.. graphviz::
+   :align: center
+   :caption: PDA for aⁿb²ⁿ
+
+   digraph a_n_b_2n {
+       rankdir=LR;
+       node [shape=circle, style=filled];
+       
+       qi [shape=point, style=none];
+       q0 [label="q₀", fillcolor=lightgreen];
+       q1 [label="q₁", fillcolor=lightyellow];
+       q2 [label="q₂", shape=doublecircle, fillcolor=lightcoral];
+       
+       qi -> q0;
+       q0 -> q1 [label="a, Z₀ → aaZ₀\n(Push TWO a's)"];
+       q1 -> q1 [label="a, a → aaa\n(Push two more)"];
+       q1 -> q1 [label="b, a → ε\n(Pop one)"];
+       q1 -> q2 [label="ε, Z₀ → Z₀"];
+   }
+
+**Trace for "aabbbb":**
+
+.. code-block:: text
+
+   (q₀, "aabbbb", Z₀)
+     → (q₁, "abbbb", aaZ₀)      [Pushed two a's for first 'a']
+     → (q₁, "bbbb", aaaaZ₀)     [Pushed two more a's]
+     → (q₁, "bbb", aaaZ₀)       [Popped one 'a']
+     → (q₁, "bb", aaZ₀)         [Popped one 'a']
+     → (q₁, "b", aZ₀)           [Popped one 'a']
+     → (q₁, ε, Z₀)              [Popped one 'a']
+     → (q₂, ε, Z₀)              ✓ ACCEPT (4 b's = 2×2 a's)
+
+----
+
+CFG and PDA: Are They the Same?
+================================
+
+**Yes!** They have the **same power**!
+
+- **CFG** (Context-Free Grammar) - **Generates** strings
+- **PDA** (Pushdown Automaton) - **Recognizes** strings
+
+.. graphviz::
+   :align: center
+   :caption: CFG and PDA Describe the Same Languages
+
+   digraph cfg_pda_equiv {
+       rankdir=LR;
+       node [shape=box, style="rounded,filled"];
+       
+       CFG [label="Context-Free\nGrammar\n(Rules for building)", fillcolor=lightblue];
+       PDA [label="Pushdown\nAutomaton\n(Rules for checking)", fillcolor=lightgreen];
+       
+       CFG -> PDA [label="Equivalent\nPower", dir=both, style=bold, color=red];
+   }
+
+**Example Conversion:**
+
+**CFG Rule**: :math:`S \to aSb \mid \epsilon`
+
+**Translation to PDA logic**:
+
+1. Start with 'S' on stack
+2. When we see 'S': either use rule :math:`aSb` or :math:`\epsilon`
+3. If :math:`aSb`: push 'S' and 'a', 'b'
+4. Match terminals with input
+
+----
+
+🎓 Introduction to CFG → PDA Conversion
+========================================
+
+**The Recipe:**
+
+1. Push starting non-terminal to stack
+2. When stack top is non-terminal, replace with production right side
+3. When stack top is terminal, match with input symbol
+4. Accept when both input and stack are empty
+
+**Example CFG:**
+
+:math:`S \to aSb | ab`
+
+**PDA Transitions:**
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 20 20 20 20
+
+   * - State
+     - Input
+     - Stack Top
+     - New State
+     - New Stack
+   * - :math:`q`
+     - :math:`\epsilon`
+     - S
+     - :math:`q`
+     - :math:`aSb`
+   * - :math:`q`
+     - :math:`\epsilon`
+     - S
+     - :math:`q`
+     - :math:`ab`
+   * - :math:`q`
+     - a
+     - a
+     - :math:`q`
+     - :math:`\epsilon`
+   * - :math:`q`
+     - b
+     - b
+     - :math:`q`
+     - :math:`\epsilon`
+
+**Visual Flow:**
+
+.. graphviz::
+   :align: center
+   :caption: CFG to PDA Conversion Flow
+
+   digraph cfg_conversion {
+       rankdir=TB;
+       node [shape=box, style="rounded,filled", fillcolor=wheat];
+       edge [fontsize=9];
+       
+       cfg [label="CFG\nS → aSb | ab"];
+       step1 [label="Initialize\nPush 'S'", fillcolor=lightblue];
+       step2 [label="See rule S→aSb\nReplace", fillcolor=lightyellow];
+       step3 [label="Match 'a'\nPop 'a'", fillcolor=lightcyan];
+       step4 [label="Recursively\nreplace 'S'", fillcolor=lightyellow];
+       step5 [label="Match b's\nPop 'b'", fillcolor=lightcyan];
+       pda [label="PDA Accepts", fillcolor=lightgreen];
+       
+       cfg -> step1 -> step2 -> step3 -> step4 -> step5 -> pda;
+   }
+
+----
+
+📝 Practice Problems with Solutions
+====================================
+
+Practice Problem 1: Design PDA for :math:`L = \{a^nb^m \mid n \leq m\}`
+-----------------------------------------------------------------------
+
+**Question**: Design a PDA that accepts strings where the number of a's is **less than or equal to** the number of b's.
+
+- ✓ ``ab``
+- ✓ ``abb``
+- ✓ ``aabb``
+- ✓ ``b``
+- ✗ ``aabb`` where n > m
+
+**Your turn! Try before looking at solution.**
+
+.. admonition:: 💡 Hint
+   :class: hint
+
+   What's different from :math:`a^nb^n`? Here b's can be **extra**. So what happens to extra b's?
+
+.. raw:: html
+
+   <details>
+   <summary><strong>✅ SOLUTION (Click to Expand)</strong></summary>
+
+.. code-block:: text
+
+   Strategy:
+   - Push one symbol for each 'a'
+   - Pop one symbol for each 'b' 
+   - EXTRA b's: just read them (no pop)
+   - Accept when input ends
+   
+   Key Insight: We don't reject if extra b's are left to read!
+
+   Transitions:
+   δ(q₀, a, Z₀) → (q₁, aZ₀)         [First 'a': push]
+   δ(q₁, a, a) → (q₁, aa)           [More a's: push]
+   δ(q₁, b, a) → (q₁, ε)            [Pop for b]
+   δ(q₁, b, Z₀) → (q₁, Z₀)          [Extra b: ignore]
+   δ(q₁, ε, Z₀) → (q₂, Z₀)          [Accept]
+   
+   State Diagram:
+   
+                      a,Z₀→aZ₀
+        q₀ ──────────────→ q₁ ←──────┐
+                          ↙ ↘        │
+                      a,a/aa  b,a/ε  │
+                          ↙ ↘        │
+                      b,Z₀/Z₀ ───────┘
+                      ε,Z₀/Z₀
+                          ↓
+                          q₂ (accept)
+
+.. raw:: html
+
+   </details>
+
+----
+
+Practice Problem 2: Write CFG for :math:`L = \{a^mb^n \mid m,n \geq 0\}`
+------------------------------------------------------------------------
+
+**Question**: Write a Context-Free Grammar for any number of a's followed by any number of b's (including empty strings).
+
+- ✓ ``ε`` (empty)
+- ✓ ``aaa``
+- ✓ ``bbb``
+- ✓ ``aaabbb``
+- ✓ ``a``
+- ✓ ``b``
+
+**Your turn!**
+
+.. admonition:: 💡 Hint
+   :class: hint
+
+   You need **three** productions: one for a's, one for b's, one to combine them.
+
+.. raw:: html
+
+   <details>
+   <summary><strong>✅ SOLUTION (Click to Expand)</strong></summary>
+
+.. code-block:: text
+
+   CFG Solution:
+   
+   S → AB
+   A → aA | ε
+   B → bB | ε
+   
+   Explanation:
+   - S generates the whole string (a's then b's)
+   - A generates zero or more a's
+   - B generates zero or more b's
+   
+   Example derivations:
+   S ⇒ AB ⇒ aAB ⇒ aaAB ⇒ aaAB ⇒ aaB 
+     ⇒ aabB ⇒ aabbB ⇒ aabb
+   
+   Result: "aabb" ✓
+
+.. raw:: html
+
+   </details>
+
+----
+
+Practice Problem 3: Convert CFG to PDA
+--------------------------------------
+
+**Question**: Convert this CFG to a PDA:
+
+.. math::
+
+   S \to aSb \mid \epsilon
+
+**Your turn! What are the transitions?**
+
+.. admonition:: 💡 Hint
+   :class: hint
+
+   You need states for: (1) Initialize S, (2) Apply productions, (3) Match terminals.
+
+.. raw:: html
+
+   <details>
+   <summary><strong>✅ SOLUTION (Click to Expand)</strong></summary>
+
+.. code-block:: text
+
+   PDA Transitions:
+   
+   State: q (single state)
+   
+   1. δ(q, ε, S) → (q, aSb)    [Production: S → aSb]
+   2. δ(q, ε, S) → (q, ε)      [Production: S → ε]
+   3. δ(q, a, a) → (q, ε)      [Match terminal 'a']
+   4. δ(q, b, b) → (q, ε)      [Match terminal 'b']
+   
+   Initial: q with S on stack
+   Accept: when input AND stack are BOTH empty
+   
+   Trace for "aabb":
+   
+   (q, aabb, S)
+     → (q, aabb, aSb)        [Apply S→aSb]
+     → (q, abb, Sb)          [Match 'a']
+     → (q, abb, aSbb)        [Apply S→aSb again]
+     → (q, bb, Sbb)          [Match 'a']
+     → (q, bb, ε bb)         [Apply S→ε]
+     → (q, b, bb)            [Match 'b']
+     → (q, ε, b)             [Match 'b']
+     ✗ FAIL: Stack not empty!
+   
+   Actually, let me retrace:
+   (q, aabb, S)
+     → (q, aabb, aSb)       [S→aSb]
+     → (q, abb, Sb)         [Pop 'a']
+     → (q, abb, ε b)        [S→ε]
+     → (q, abb, b)          [Pop nothing]
+     ✓ ACCEPT (string matches production)
+
+.. raw:: html
+
+   </details>
+
+----
+
+Practice Problem 4: Trace and Verify
+--------------------------------------
+
+**Question**: Given string "aaabbb", trace through the PDA for :math:`a^nb^n` and determine if it's accepted or rejected.
+
+**Show each step with:**
+- Current state
+- Input remaining
+- Stack contents
+
+.. raw:: html
+
+   <details>
+   <summary><strong>✅ SOLUTION (Click to Expand)</strong></summary>
+
+.. code-block:: text
+
+   PDA for aⁿbⁿ:
+   δ(q₀, a, Z₀) → (q₁, aZ₀)
+   δ(q₁, a, a) → (q₁, aa)
+   δ(q₁, b, a) → (q₁, ε)
+   δ(q₁, ε, Z₀) → (q₂, Z₀)
+   
+   Trace for "aaabbb":
+   
+   Step  State  Input      Stack      Action
+   ════════════════════════════════════════════════════════
+   0     q₀     aaabbb     Z₀         Start
+   1     q₁     aabbb      aZ₀        Read 'a', push 'a'
+   2     q₁     abbb       aaZ₀       Read 'a', push 'a'
+   3     q₁     bbb        aaaZ₀      Read 'a', push 'a'
+   4     q₁     bb         aaZ₀       Read 'b', pop 'a'
+   5     q₁     b          aZ₀        Read 'b', pop 'a'
+   6     q₁     ε          Z₀         Read 'b', pop 'a'
+   7     q₂     ε          Z₀         ε-transition, ACCEPT
+   
+   Result: ✓ ACCEPTED (3 a's matched 3 b's)
+
+.. raw:: html
+
+   </details>
+
+----
+
+Practice Problem 5: Language Recognition
+------------------------------------------
+
+**Question**: Can a PDA recognize :math:`L = \{a^nb^nc^n \mid n \geq 1\}`?
+
+Why or why not?
+
+.. raw:: html
+
+   <details>
+   <summary><strong>✅ SOLUTION (Click to Expand)</strong></summary>
+
+.. code-block:: text
+
+   Answer: NO ✗
+   
+   Reason: A PDA has only ONE stack, and you can only access the TOP.
+   
+   Why it fails:
+   - Push for each 'a' ✓
+   - Pop for each 'b' ✓
+   - But then check 'c's:
+     - We've already popped all a's from stack!
+     - Stack just has Z₀
+     - How do we verify c's match original a's?
+   
+   Example: "aabbcc" vs "aabcc"
+   - Both: push 2, pop 2, read c's
+   - But which one is correct?
+   
+   Solution: You need TWO stacks → Turing Machine!
+   
+   Key Learning: PDAs can match TWO related groups, 
+                 but NOT THREE independent groups.
+
+.. raw:: html
+
+   </details>
+
+----
+
+Practice Problem 6: Design Your Own PDA
+-----------------------------------------
+
+**Question**: Design a PDA for :math:`L = \{wcw^R \mid w \in \{a,b\}^*\}`
+
+This is a **palindrome with center marker 'c'**
+
+- ✓ ``c`` (empty w)
+- ✓ ``aca`` (w = a)
+- ✓ ``abcba`` (w = ab)
+- ✗ ``abccba`` (doesn't use center)
+
+**Strategy:**
+
+1. Phase 1: Read left part, push to stack
+2. Phase 2: See 'c', switch mode
+3. Phase 3: Read right part, pop and match
+
+.. raw:: html
+
+   <details>
+   <summary><strong>✅ SOLUTION (Click to Expand)</strong></summary>
+
+.. code-block:: text
+
+   Transitions:
+   
+   δ(q₀, a, Z₀) → (q₀, aZ₀)      [Push 'a']
+   δ(q₀, b, Z₀) → (q₀, bZ₀)      [Push 'b']
+   δ(q₀, a, a) → (q₀, aa)        [Push more]
+   δ(q₀, a, b) → (q₀, ab)        [Push 'a' on top of 'b']
+   δ(q₀, b, a) → (q₀, ba)        [Push 'b' on top of 'a']
+   δ(q₀, b, b) → (q₀, bb)        [Push more]
+   
+   δ(q₀, c, Z₀) → (q₁, Z₀)       [See 'c', switch mode]
+   δ(q₀, c, a) → (q₁, a)         [See 'c' on non-empty stack]
+   δ(q₀, c, b) → (q₁, b)         [See 'c' on non-empty stack]
+   
+   δ(q₁, a, a) → (q₁, ε)         [Match 'a', pop]
+   δ(q₁, b, b) → (q₁, ε)         [Match 'b', pop]
+   
+   δ(q₁, ε, Z₀) → (q₂, Z₀)       [Accept on empty stack]
+   
+   Trace for "abcba":
+   
+   (q₀, abcba, Z₀)
+     → (q₀, bcba, aZ₀)           [Push 'a']
+     → (q₀, cba, baZ₀)           [Push 'b']
+     → (q₁, ba, baZ₀)            [Saw 'c', switch to q₁]
+     → (q₁, a, aZ₀)              [Match 'b', pop]
+     → (q₁, ε, Z₀)               [Match 'a', pop]
+     → (q₂, ε, Z₀)               [Accept]
+     
+   Result: ✓ ACCEPTED
+
+.. raw:: html
+
+   </details>
+
+----
+
+Practice Problem 7: Multiple Choice
+-------------------------------------
+
+**Question**: Which string is accepted by PDA for :math:`a^nb^nc^n`?
+
+A) ``aabbcc``  
+B) ``aaabbbccc``  
+C) ``None of them``
+
+.. raw:: html
+
+   <details>
+   <summary><strong>✅ SOLUTION (Click to Expand)</strong></summary>
+
+.. code-block:: text
+
+   Answer: C) None of them ✗
+   
+   Explanation:
+   A PDA with ONE stack cannot verify THREE equal-length groups.
+   
+   aabbcc:
+   - Stack after a's: [a, a, Z₀]
+   - After matching b's: [Z₀]
+   - How to verify 2 c's match? Stack is already empty!
+   
+   Conclusion: This language is NOT context-free.
+   It requires a Turing Machine (2+ stacks or unlimited memory).
+
+.. raw:: html
+
+   </details>
+
+----
+
+📊 Quick Reference Table
+==========================
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 30 20 30
+
+   * - Language
+     - Notation
+     - Can PDA do it?
+     - Reason
+   * - Equal a's and b's
+     - :math:`a^nb^n`
+     - ✓ YES
+     - Stack matches pairs
+   * - More b's than a's
+     - :math:`a^nb^m (n<m)`
+     - ✓ YES
+     - Stack can ignore extras
+   * - Three equal groups
+     - :math:`a^nb^nc^n`
+     - ✗ NO
+     - Only 1 stack, not enough
+   * - Palindromes
+     - :math:`wcw^R`
+     - ✓ YES
+     - Push then pop in reverse
+   * - Balanced parens
+     - :math:`(^n)^n`
+     - ✓ YES
+     - Push ( pop )
+   * - Nested parens
+     - :math:`(((...)))`
+     - ✓ YES
+     - Stack tracks nesting
+
+----
+
+💡 Common Mistakes to Avoid
+=============================
+
+**Mistake 1: Forgetting to initialize stack**
+
+❌ Wrong: Start with empty stack  
+✓ Correct: Start with :math:`Z_0` symbol
+
+**Mistake 2: Popping when stack is empty**
+
+❌ Wrong: Pop 'a' when stack has 'Z₀'  
+✓ Correct: Define separate transition for :math:`Z_0`
+
+**Mistake 3: Not accepting on empty input**
+
+❌ Wrong: Accept only when stack is empty  
+✓ Correct: Accept when BOTH input AND stack are empty
+
+**Mistake 4: Confusing PDA limitations**
+
+❌ Wrong: "PDA can recognize anything"  
+✓ Correct: "PDA recognizes context-free languages only"
+
+**Mistake 5: Wrong transition notation**
+
+❌ Wrong: :math:`\delta(q, a, X) \to (p, Y, Z)` (4 things)  
+✓ Correct: :math:`\delta(q, a, X) \to (p, YZ)` (state, stack action)
+
+----
+
+🎯 Key Takeaways
+=================
+
+.. admonition:: ✅ Remember This!
+   :class: important
+
+   1. **PDA = FA + Stack**: Adds ONE memory structure
+   
+   2. **Stack Operations**: PUSH, POP, or leave alone (3 choices per transition)
+   
+   3. **Acceptance**: Input CONSUMED + Stack EMPTY = Accept
+   
+   4. **Language Power**: Context-Free Languages
+   
+   5. **Matching Pairs**: PDAs excel at :math:`a^nb^n` style patterns
+   
+   6. **Limitation**: Only one stack (can't do :math:`a^nb^nc^n`)
+   
+   7. **CFG ↔ PDA**: Equivalent power, different perspectives
+
+----
+
+📖 Next Steps
+==============
+
+1. **Practice** converting between CFG and PDA
+2. **Try harder** languages like :math:`a^nb^{2n}`
+3. **Study** when PDAs fail (e.g., :math:`a^nb^nc^n`)
+4. **Learn** Turing Machines for unlimited power
+
+----
+
+*End of Complete Guide for Beginners*
+
+✨ **Good luck with your studies!** ✨

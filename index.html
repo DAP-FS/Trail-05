@@ -1,0 +1,1001 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CFG and PDA: Complete Visual Guide for Beginners &mdash; Remedial 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            Remedial
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">CFG and PDA: Complete Visual Guide for Beginners</a></li>
+<li><a class="reference internal" href="#introduction-what-are-pdas">📚 Introduction: What Are PDAs?</a></li>
+<li><a class="reference internal" href="#why-do-we-need-pdas">Why Do We Need PDAs?</a><ul>
+<li><a class="reference internal" href="#finite-automata-limitation"><strong>Finite Automata Limitation</strong></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pda-components-explained-simply">PDA Components Explained Simply</a></li>
+<li><a class="reference internal" href="#stack-operations-the-core-mechanic">Stack Operations: The Core Mechanic</a></li>
+<li><a class="reference internal" href="#example-1-pda-for-l-a-nb-n-mid-n-geq-1">🎯 Example 1: PDA for <span class="math notranslate nohighlight">\(L = \{a^nb^n \mid n \geq 1\}\)</span></a></li>
+<li><a class="reference internal" href="#example-2-pda-for-balanced-parentheses">🎯 Example 2: PDA for Balanced Parentheses</a></li>
+<li><a class="reference internal" href="#example-3-pda-for-palindromes-a-nb-na-n">🎯 Example 3: PDA for Palindromes <span class="math notranslate nohighlight">\(a^nb^na^n\)</span></a></li>
+<li><a class="reference internal" href="#example-4-pda-for-l-a-nb-2n-mid-n-geq-1">🎯 Example 4: PDA for <span class="math notranslate nohighlight">\(L = \{a^nb^{2n} \mid n \geq 1\}\)</span></a></li>
+<li><a class="reference internal" href="#cfg-and-pda-are-they-the-same">CFG and PDA: Are They the Same?</a></li>
+<li><a class="reference internal" href="#introduction-to-cfg-pda-conversion">🎓 Introduction to CFG → PDA Conversion</a></li>
+<li><a class="reference internal" href="#practice-problems-with-solutions">📝 Practice Problems with Solutions</a><ul>
+<li><a class="reference internal" href="#practice-problem-1-design-pda-for-l-a-nb-m-mid-n-leq-m">Practice Problem 1: Design PDA for <span class="math notranslate nohighlight">\(L = \{a^nb^m \mid n \leq m\}\)</span></a></li>
+<li><a class="reference internal" href="#practice-problem-2-write-cfg-for-l-a-mb-n-mid-m-n-geq-0">Practice Problem 2: Write CFG for <span class="math notranslate nohighlight">\(L = \{a^mb^n \mid m,n \geq 0\}\)</span></a></li>
+<li><a class="reference internal" href="#practice-problem-3-convert-cfg-to-pda">Practice Problem 3: Convert CFG to PDA</a></li>
+<li><a class="reference internal" href="#practice-problem-4-trace-and-verify">Practice Problem 4: Trace and Verify</a></li>
+<li><a class="reference internal" href="#practice-problem-5-language-recognition">Practice Problem 5: Language Recognition</a></li>
+<li><a class="reference internal" href="#practice-problem-6-design-your-own-pda">Practice Problem 6: Design Your Own PDA</a></li>
+<li><a class="reference internal" href="#practice-problem-7-multiple-choice">Practice Problem 7: Multiple Choice</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#quick-reference-table">📊 Quick Reference Table</a></li>
+<li><a class="reference internal" href="#common-mistakes-to-avoid">💡 Common Mistakes to Avoid</a></li>
+<li><a class="reference internal" href="#key-takeaways">🎯 Key Takeaways</a></li>
+<li><a class="reference internal" href="#next-steps">📖 Next Steps</a></li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">Remedial</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">CFG and PDA: Complete Visual Guide for Beginners</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cfg-and-pda-complete-visual-guide-for-beginners">
+<h1>CFG and PDA: Complete Visual Guide for Beginners<a class="headerlink" href="#cfg-and-pda-complete-visual-guide-for-beginners" title="Link to this heading"></a></h1>
+</section>
+<hr class="docutils" />
+<section id="introduction-what-are-pdas">
+<h1>📚 Introduction: What Are PDAs?<a class="headerlink" href="#introduction-what-are-pdas" title="Link to this heading"></a></h1>
+<p>Imagine you’re at a library. A librarian can check books IN and OUT. But a <strong>simple counter</strong> (like a Finite Automaton) can’t remember what books are currently inside!</p>
+<p>A <strong>Pushdown Automaton (PDA)</strong> is like a librarian with a <strong>notepad (stack)</strong> that writes down what’s inside. This memory lets the PDA do <strong>amazing things</strong> that simple machines cannot.</p>
+<div class="tip admonition">
+<p class="admonition-title">💡 Key Idea</p>
+<p><strong>PDA = Finite Automaton + Stack Memory</strong></p>
+<p>Think of the stack like a <strong>stack of plates</strong>: you can only add or remove from the <strong>TOP</strong>, not the bottom!</p>
+</div>
+</section>
+<hr class="docutils" />
+<section id="why-do-we-need-pdas">
+<h1>Why Do We Need PDAs?<a class="headerlink" href="#why-do-we-need-pdas" title="Link to this heading"></a></h1>
+<section id="finite-automata-limitation">
+<h2><strong>Finite Automata Limitation</strong><a class="headerlink" href="#finite-automata-limitation" title="Link to this heading"></a></h2>
+<p>Let’s try to check if parentheses are balanced: <code class="docutils literal notranslate"><span class="pre">((3</span> <span class="pre">+</span> <span class="pre">5)</span> <span class="pre">*</span> <span class="pre">2)</span></code></p>
+<p>❌ <strong>Finite Automaton FAILS</strong> because it has no memory!</p>
+<ul class="simple">
+<li><p>Sees first <code class="docutils literal notranslate"><span class="pre">(</span></code> → can’t remember it</p></li>
+<li><p>Sees second <code class="docutils literal notranslate"><span class="pre">(</span></code> → can’t remember TWO opening brackets</p></li>
+<li><p>Sees <cite>)</cite> → doesn’t know how many to match!</p></li>
+</ul>
+<p>✅ <strong>PDA WORKS</strong> because it has a stack!</p>
+<ul class="simple">
+<li><p>Sees <code class="docutils literal notranslate"><span class="pre">(</span></code> → Push to stack</p></li>
+<li><p>Sees <code class="docutils literal notranslate"><span class="pre">)</span></code> → Pop from stack</p></li>
+<li><p>Stack empty at end? → Accept!</p></li>
+</ul>
+<figure class="align-center" id="id1">
+<div class="graphviz"><object data="_images/graphviz-b76d5a2dcb353bc11c65786dd3c8099736d291dc.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph capability {
+    rankdir=LR;
+    node [shape=box, style=&quot;rounded,filled&quot;, fillcolor=wheat];
+    edge [fontsize=10];
+
+    task [label=&quot;Task: Check\nBalanced\nParentheses&quot;, fillcolor=lightcyan];
+    fa [label=&quot;Finite\nAutomaton&quot;, fillcolor=lightcoral];
+    pda [label=&quot;Pushdown\nAutomaton&quot;, fillcolor=lightgreen];
+
+    task -&gt; fa [label=&quot;✗ FAIL&quot;];
+    task -&gt; pda [label=&quot;✓ WORKS&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-text">FA Cannot Remember, PDA Can</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<hr class="docutils" />
+<section id="pda-components-explained-simply">
+<h1>PDA Components Explained Simply<a class="headerlink" href="#pda-components-explained-simply" title="Link to this heading"></a></h1>
+<p>A PDA is defined as: <span class="math notranslate nohighlight">\(M = (Q, \Sigma, \Gamma, \delta, q_0, Z_0, F)\)</span></p>
+<p>Let’s break it down like building blocks:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 25.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Symbol</p></th>
+<th class="head"><p>Name</p></th>
+<th class="head"><p>Explanation (Simple)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(Q\)</span></p></td>
+<td><p>States</p></td>
+<td><p>Like rooms in a house. You move between them.</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\Sigma\)</span></p></td>
+<td><p>Input alphabet</p></td>
+<td><p>Symbols you READ from the input string (e.g., ‘a’, ‘b’, ‘(’, ‘)’)</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\Gamma\)</span></p></td>
+<td><p>Stack alphabet</p></td>
+<td><p>Symbols you can WRITE on the stack (often <span class="math notranslate nohighlight">\(Z_0\)</span>, ‘a’, ‘b’)</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\delta\)</span></p></td>
+<td><p>Transition function</p></td>
+<td><p>Rules: “If in state q, read symbol ‘a’, stack top is ‘X’, then…”</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(q_0\)</span></p></td>
+<td><p>Start state</p></td>
+<td><p>The first room you enter</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(Z_0\)</span></p></td>
+<td><p>Initial stack symbol</p></td>
+<td><p>Stack starts with this symbol (usually represents “empty”)</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(F\)</span></p></td>
+<td><p>Accept states</p></td>
+<td><p>Final rooms where you WIN (input accepted)</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example Values:</strong></p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(Q = \{q_0, q_1, q_2\}\)</span> → 3 states</p></li>
+<li><p><span class="math notranslate nohighlight">\(\Sigma = \{a, b\}\)</span> → Input is just ‘a’ or ‘b’</p></li>
+<li><p><span class="math notranslate nohighlight">\(\Gamma = \{Z_0, a\}\)</span> → Stack can have <span class="math notranslate nohighlight">\(Z_0\)</span> or ‘a’</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="stack-operations-the-core-mechanic">
+<h1>Stack Operations: The Core Mechanic<a class="headerlink" href="#stack-operations-the-core-mechanic" title="Link to this heading"></a></h1>
+<p><strong>What is a Stack?</strong></p>
+<p>Imagine stacking plates. You can:</p>
+<ol class="arabic simple">
+<li><p><strong>PUSH</strong>: Add a plate on top</p></li>
+<li><p><strong>POP</strong>: Remove the top plate</p></li>
+<li><p><strong>PEEK</strong>: Look at what’s on top (don’t remove)</p></li>
+</ol>
+<figure class="align-center" id="id2">
+<div class="graphviz"><object data="_images/graphviz-d15b6c567a8c564c85dd6840b03dac306c90d709.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph stack_ops {
+    rankdir=LR;
+    node [shape=record, style=filled, fillcolor=lightyellow];
+    edge [fontsize=10];
+
+    stack1 [label=&quot;{ Start | { Z₀ } }&quot;];
+    stack2 [label=&quot;{ Push 'a' | { a | Z₀ } }&quot;];
+    stack3 [label=&quot;{ Push 'a' | { a | a | Z₀ } }&quot;];
+    stack4 [label=&quot;{ Pop 'a' | { a | Z₀ } }&quot;];
+    stack5 [label=&quot;{ Pop 'a' | { Z₀ } }&quot;, fillcolor=lightgreen];
+
+    stack1 -&gt; stack2 -&gt; stack3 -&gt; stack4 -&gt; stack5;
+}</p></object></div>
+<figcaption>
+<p><span class="caption-text">Stack Operations</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p><strong>Transition Notation:</strong></p>
+<p>When we write: <span class="math notranslate nohighlight">\(\delta(q, a, X) \to (p, YZ)\)</span></p>
+<p>This means:
+- <strong>Current state</strong>: q
+- <strong>Read input</strong>: a
+- <strong>Stack top</strong>: X
+- <strong>New state</strong>: p
+- <strong>Stack action</strong>: Pop X, Push Y then Z</p>
+</section>
+<hr class="docutils" />
+<section id="example-1-pda-for-l-a-nb-n-mid-n-geq-1">
+<h1>🎯 Example 1: PDA for <span class="math notranslate nohighlight">\(L = \{a^nb^n \mid n \geq 1\}\)</span><a class="headerlink" href="#example-1-pda-for-l-a-nb-n-mid-n-geq-1" title="Link to this heading"></a></h1>
+<p><strong>What is this language?</strong></p>
+<p>Equal number of ‘a’s followed by equal number of ‘b’s:</p>
+<ul class="simple">
+<li><p>✓ <code class="docutils literal notranslate"><span class="pre">ab</span></code> (1 a, 1 b)</p></li>
+<li><p>✓ <code class="docutils literal notranslate"><span class="pre">aabb</span></code> (2 a’s, 2 b’s)</p></li>
+<li><p>✓ <code class="docutils literal notranslate"><span class="pre">aaabbb</span></code> (3 a’s, 3 b’s)</p></li>
+<li><p>✗ <code class="docutils literal notranslate"><span class="pre">aab</span></code> (2 a’s, 1 b) - NOT EQUAL</p></li>
+<li><p>✗ <code class="docutils literal notranslate"><span class="pre">baa</span></code> (b before a) - WRONG ORDER</p></li>
+</ul>
+<p><strong>Strategy to Build PDA:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Reading a’s phase</strong>: PUSH each ‘a’ to stack</p></li>
+<li><p><strong>Reading b’s phase</strong>: POP for each ‘b’</p></li>
+<li><p><strong>Accept condition</strong>: Stack empty when input ends</p></li>
+</ol>
+<p><strong>The PDA Design:</strong></p>
+<figure class="align-center" id="id3">
+<div class="graphviz"><object data="_images/graphviz-00f7553ddea312af83b74401dcbccbd13fc77ce2.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph pda_anbn {
+    rankdir=LR;
+    node [shape=circle, style=filled];
+    edge [fontsize=11];
+
+    qi [shape=point, style=none];
+    q0 [label=&quot;q₀&quot;, fillcolor=lightgreen, tooltip=&quot;START&quot;];
+    q1 [label=&quot;q₁&quot;, fillcolor=lightyellow, tooltip=&quot;READING&quot;];
+    q2 [label=&quot;q₂&quot;, shape=doublecircle, fillcolor=lightcoral, tooltip=&quot;ACCEPT&quot;];
+
+    qi -&gt; q0;
+    q0 -&gt; q1 [label=&quot;a, Z₀ → aZ₀\n(First 'a')&quot;];
+    q1 -&gt; q1 [label=&quot;a, a → aa\n(Push more)&quot;];
+    q1 -&gt; q1 [label=&quot;b, a → ε\n(Pop for 'b')&quot;, style=dashed];
+    q1 -&gt; q2 [label=&quot;ε, Z₀ → Z₀\n(Accept)&quot;, color=green];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-text">PDA for aⁿbⁿ - Color Coded States</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p><strong>Line-by-Line Explanation:</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 10.0%" />
+<col style="width: 15.0%" />
+<col style="width: 15.0%" />
+<col style="width: 30.0%" />
+<col style="width: 30.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Step</p></th>
+<th class="head"><p>State</p></th>
+<th class="head"><p>Input</p></th>
+<th class="head"><p>Stack Top</p></th>
+<th class="head"><p>Action → New Stack</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><p><span class="math notranslate nohighlight">\(q_0\)</span></p></td>
+<td><p>Read ‘a’</p></td>
+<td><p><span class="math notranslate nohighlight">\(Z_0\)</span></p></td>
+<td><p>Push ‘a’ → <span class="math notranslate nohighlight">\(aZ_0\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p><span class="math notranslate nohighlight">\(q_1\)</span></p></td>
+<td><p>Read ‘a’</p></td>
+<td><p>‘a’</p></td>
+<td><p>Push ‘a’ → <span class="math notranslate nohighlight">\(aaZ_0\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>3</p></td>
+<td><p><span class="math notranslate nohighlight">\(q_1\)</span></p></td>
+<td><p>Read ‘b’</p></td>
+<td><p>‘a’</p></td>
+<td><p>Pop ‘a’ → <span class="math notranslate nohighlight">\(aZ_0\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>4</p></td>
+<td><p><span class="math notranslate nohighlight">\(q_1\)</span></p></td>
+<td><p>Read ‘b’</p></td>
+<td><p>‘a’</p></td>
+<td><p>Pop ‘a’ → <span class="math notranslate nohighlight">\(Z_0\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>5</p></td>
+<td><p><span class="math notranslate nohighlight">\(q_1\)</span></p></td>
+<td><p>No more input</p></td>
+<td><p><span class="math notranslate nohighlight">\(Z_0\)</span></p></td>
+<td><p>Move to <span class="math notranslate nohighlight">\(q_2\)</span> → ACCEPT!</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Complete Trace for “aabb”:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Configuration                Input Remaining    Stack
+═════════════════════════════════════════════════════════════
+Start: (q₀, &quot;aabb&quot;, Z₀)           aabb             [Z₀]
+Step 1: (q₁, &quot;abb&quot;, Z₀)            abb              [aZ₀]
+Step 2: (q₁, &quot;bb&quot;, Z₀)              bb              [aaZ₀]
+Step 3: (q₁, &quot;b&quot;, Z₀)               b               [aZ₀]
+Step 4: (q₁, ε, Z₀)                 ε               [Z₀]
+Step 5: (q₂, ε, Z₀)                 ε               [Z₀]  ✓ ACCEPT
+</pre></div>
+</div>
+<p><strong>Rejected Trace for “aab”:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Configuration                Input Remaining    Stack
+═════════════════════════════════════════════════════════════
+Start: (q₀, &quot;aab&quot;, Z₀)           aab              [Z₀]
+Step 1: (q₁, &quot;ab&quot;, Z₀)            ab               [aZ₀]
+Step 2: (q₁, &quot;b&quot;, Z₀)              b               [aaZ₀]
+Step 3: (q₁, ε, Z₀)                ε               [aZ₀]  ← Stack NOT empty!
+Result: (q₁, ε, Z₀)                                ✗ REJECT
+</pre></div>
+</div>
+<div class="important admonition">
+<p class="admonition-title">🔑 Learn This!</p>
+<p><strong>The key insight</strong>: We need <strong>exactly</strong> as many pops as pushes. If one is left over, reject!</p>
+</div>
+</section>
+<hr class="docutils" />
+<section id="example-2-pda-for-balanced-parentheses">
+<h1>🎯 Example 2: PDA for Balanced Parentheses<a class="headerlink" href="#example-2-pda-for-balanced-parentheses" title="Link to this heading"></a></h1>
+<p><strong>Language</strong>: Strings with properly nested parentheses</p>
+<ul class="simple">
+<li><p>✓ <code class="docutils literal notranslate"><span class="pre">()</span></code></p></li>
+<li><p>✓ <code class="docutils literal notranslate"><span class="pre">(())</span></code></p></li>
+<li><p>✓ <code class="docutils literal notranslate"><span class="pre">()(())</span></code></p></li>
+<li><p>✗ <code class="docutils literal notranslate"><span class="pre">)(</span></code> - Wrong order</p></li>
+<li><p>✗ <code class="docutils literal notranslate"><span class="pre">(()</span></code> - Missing closing</p></li>
+</ul>
+<p><strong>Strategy:</strong></p>
+<ol class="arabic simple">
+<li><p>Push ‘(’ to stack</p></li>
+<li><p>For each ‘)’, pop a ‘(’</p></li>
+<li><p>Stack empty at end = balanced!</p></li>
+</ol>
+<figure class="align-center" id="id4">
+<div class="graphviz"><object data="_images/graphviz-7a49d6ade188639171a5fd7ec6efd3f2ea43bff9.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph balanced_parens {
+    rankdir=LR;
+    node [shape=circle, style=filled];
+
+    qi [shape=point, style=none];
+    q0 [label=&quot;q₀&quot;, fillcolor=lightgreen];
+    q1 [label=&quot;q₁&quot;, fillcolor=lightyellow];
+    q2 [label=&quot;q₂&quot;, shape=doublecircle, fillcolor=lightcoral];
+
+    qi -&gt; q0;
+    q0 -&gt; q1 [label=&quot;(, Z₀ → (Z₀&quot;];
+    q1 -&gt; q1 [label=&quot;(, ( → ((&quot;];
+    q1 -&gt; q1 [label=&quot;), ( → ε&quot;];
+    q1 -&gt; q2 [label=&quot;ε, Z₀ → Z₀&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-text">PDA for Balanced Parentheses</span><a class="headerlink" href="#id4" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p><strong>Trace for “(())”:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>(q₀, &quot;(())&quot;, Z₀)
+  → (q₁, &quot;())&quot;, (Z₀)
+  → (q₁, &quot;)&quot;, ((Z₀)      [pushed another (]
+  → (q₁, &quot;)&quot;, (Z₀)       [popped one (]
+  → (q₁, ε, Z₀)          [popped final (]
+  → (q₂, ε, Z₀)          ✓ ACCEPT
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="example-3-pda-for-palindromes-a-nb-na-n">
+<h1>🎯 Example 3: PDA for Palindromes <span class="math notranslate nohighlight">\(a^nb^na^n\)</span><a class="headerlink" href="#example-3-pda-for-palindromes-a-nb-na-n" title="Link to this heading"></a></h1>
+<p><strong>Language</strong>: a’s, then b’s, then same number of a’s again</p>
+<ul class="simple">
+<li><p>✓ <code class="docutils literal notranslate"><span class="pre">aba</span></code> (1 a, 1 b, 1 a)</p></li>
+<li><p>✓ <code class="docutils literal notranslate"><span class="pre">aabbaa</span></code> (2 a’s, 2 b’s, 2 a’s)</p></li>
+<li><p>✗ <code class="docutils literal notranslate"><span class="pre">aba</span></code> → wait, that’s only 2 a’s total, not 1+1</p></li>
+<li><p>Actually: ✓ <code class="docutils literal notranslate"><span class="pre">aba</span></code>, ✓ <code class="docutils literal notranslate"><span class="pre">aabbaa</span></code>, ✓ <code class="docutils literal notranslate"><span class="pre">aaabbbaaa</span></code></p></li>
+</ul>
+<p><strong>Strategy:</strong></p>
+<ol class="arabic simple">
+<li><p>Push for each first group of ‘a’s</p></li>
+<li><p>Read b’s (don’t change stack)</p></li>
+<li><p>Pop for each final group of ‘a’s</p></li>
+<li><p>Stack empty = palindrome!</p></li>
+</ol>
+<figure class="align-center" id="id5">
+<div class="graphviz"><object data="_images/graphviz-5903e22bc267e7ec3f8a3799a7695f2e8c5c61c8.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph palindrome {
+    rankdir=LR;
+    node [shape=circle, style=filled];
+
+    qi [shape=point, style=none];
+    q0 [label=&quot;q₀\n(Push a's)&quot;, fillcolor=lightgreen];
+    q1 [label=&quot;q₁\n(Read b's)&quot;, fillcolor=lightyellow];
+    q2 [label=&quot;q₂\n(Pop a's)&quot;, fillcolor=lightblue];
+    q3 [label=&quot;q₃&quot;, shape=doublecircle, fillcolor=lightcoral];
+
+    qi -&gt; q0;
+    q0 -&gt; q0 [label=&quot;a, a → aa\na, Z₀ → aZ₀&quot;];
+    q0 -&gt; q1 [label=&quot;b, a → a\nε (transition)&quot;];
+    q1 -&gt; q1 [label=&quot;b, a → a&quot;];
+    q1 -&gt; q2 [label=&quot;ε, a → a\n(switch)&quot;];
+    q2 -&gt; q2 [label=&quot;a, a → ε&quot;];
+    q2 -&gt; q3 [label=&quot;ε, Z₀ → Z₀&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-text">PDA for aⁿbⁿaⁿ</span><a class="headerlink" href="#id5" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<hr class="docutils" />
+<section id="example-4-pda-for-l-a-nb-2n-mid-n-geq-1">
+<h1>🎯 Example 4: PDA for <span class="math notranslate nohighlight">\(L = \{a^nb^{2n} \mid n \geq 1\}\)</span><a class="headerlink" href="#example-4-pda-for-l-a-nb-2n-mid-n-geq-1" title="Link to this heading"></a></h1>
+<p><strong>What is this?</strong></p>
+<p>For every ‘a’, there are <strong>2 b’s</strong></p>
+<ul class="simple">
+<li><p>✓ <code class="docutils literal notranslate"><span class="pre">abb</span></code> (1 a, 2 b’s)</p></li>
+<li><p>✓ <code class="docutils literal notranslate"><span class="pre">aabbbb</span></code> (2 a’s, 4 b’s)</p></li>
+<li><p>✗ <code class="docutils literal notranslate"><span class="pre">abbb</span></code> (1 a, 3 b’s) - Not 2× number of a’s</p></li>
+</ul>
+<p><strong>Key Difference</strong>: For each ‘a’, we push <strong>TWO</strong> symbols!</p>
+<figure class="align-center" id="id6">
+<div class="graphviz"><object data="_images/graphviz-2a819946b4c5d6c09cb14a7881d8d017eda21441.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph a_n_b_2n {
+    rankdir=LR;
+    node [shape=circle, style=filled];
+
+    qi [shape=point, style=none];
+    q0 [label=&quot;q₀&quot;, fillcolor=lightgreen];
+    q1 [label=&quot;q₁&quot;, fillcolor=lightyellow];
+    q2 [label=&quot;q₂&quot;, shape=doublecircle, fillcolor=lightcoral];
+
+    qi -&gt; q0;
+    q0 -&gt; q1 [label=&quot;a, Z₀ → aaZ₀\n(Push TWO a's)&quot;];
+    q1 -&gt; q1 [label=&quot;a, a → aaa\n(Push two more)&quot;];
+    q1 -&gt; q1 [label=&quot;b, a → ε\n(Pop one)&quot;];
+    q1 -&gt; q2 [label=&quot;ε, Z₀ → Z₀&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-text">PDA for aⁿb²ⁿ</span><a class="headerlink" href="#id6" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p><strong>Trace for “aabbbb”:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>(q₀, &quot;aabbbb&quot;, Z₀)
+  → (q₁, &quot;abbbb&quot;, aaZ₀)      [Pushed two a&#39;s for first &#39;a&#39;]
+  → (q₁, &quot;bbbb&quot;, aaaaZ₀)     [Pushed two more a&#39;s]
+  → (q₁, &quot;bbb&quot;, aaaZ₀)       [Popped one &#39;a&#39;]
+  → (q₁, &quot;bb&quot;, aaZ₀)         [Popped one &#39;a&#39;]
+  → (q₁, &quot;b&quot;, aZ₀)           [Popped one &#39;a&#39;]
+  → (q₁, ε, Z₀)              [Popped one &#39;a&#39;]
+  → (q₂, ε, Z₀)              ✓ ACCEPT (4 b&#39;s = 2×2 a&#39;s)
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="cfg-and-pda-are-they-the-same">
+<h1>CFG and PDA: Are They the Same?<a class="headerlink" href="#cfg-and-pda-are-they-the-same" title="Link to this heading"></a></h1>
+<p><strong>Yes!</strong> They have the <strong>same power</strong>!</p>
+<ul class="simple">
+<li><p><strong>CFG</strong> (Context-Free Grammar) - <strong>Generates</strong> strings</p></li>
+<li><p><strong>PDA</strong> (Pushdown Automaton) - <strong>Recognizes</strong> strings</p></li>
+</ul>
+<figure class="align-center" id="id7">
+<div class="graphviz"><object data="_images/graphviz-476b5e99909ffa1de1ede13ed54d6db2d72c7ca6.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph cfg_pda_equiv {
+    rankdir=LR;
+    node [shape=box, style=&quot;rounded,filled&quot;];
+
+    CFG [label=&quot;Context-Free\nGrammar\n(Rules for building)&quot;, fillcolor=lightblue];
+    PDA [label=&quot;Pushdown\nAutomaton\n(Rules for checking)&quot;, fillcolor=lightgreen];
+
+    CFG -&gt; PDA [label=&quot;Equivalent\nPower&quot;, dir=both, style=bold, color=red];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-text">CFG and PDA Describe the Same Languages</span><a class="headerlink" href="#id7" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p><strong>Example Conversion:</strong></p>
+<p><strong>CFG Rule</strong>: <span class="math notranslate nohighlight">\(S \to aSb \mid \epsilon\)</span></p>
+<p><strong>Translation to PDA logic</strong>:</p>
+<ol class="arabic simple">
+<li><p>Start with ‘S’ on stack</p></li>
+<li><p>When we see ‘S’: either use rule <span class="math notranslate nohighlight">\(aSb\)</span> or <span class="math notranslate nohighlight">\(\epsilon\)</span></p></li>
+<li><p>If <span class="math notranslate nohighlight">\(aSb\)</span>: push ‘S’ and ‘a’, ‘b’</p></li>
+<li><p>Match terminals with input</p></li>
+</ol>
+</section>
+<hr class="docutils" />
+<section id="introduction-to-cfg-pda-conversion">
+<h1>🎓 Introduction to CFG → PDA Conversion<a class="headerlink" href="#introduction-to-cfg-pda-conversion" title="Link to this heading"></a></h1>
+<p><strong>The Recipe:</strong></p>
+<ol class="arabic simple">
+<li><p>Push starting non-terminal to stack</p></li>
+<li><p>When stack top is non-terminal, replace with production right side</p></li>
+<li><p>When stack top is terminal, match with input symbol</p></li>
+<li><p>Accept when both input and stack are empty</p></li>
+</ol>
+<p><strong>Example CFG:</strong></p>
+<p><span class="math notranslate nohighlight">\(S \to aSb | ab\)</span></p>
+<p><strong>PDA Transitions:</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>State</p></th>
+<th class="head"><p>Input</p></th>
+<th class="head"><p>Stack Top</p></th>
+<th class="head"><p>New State</p></th>
+<th class="head"><p>New Stack</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(q\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\epsilon\)</span></p></td>
+<td><p>S</p></td>
+<td><p><span class="math notranslate nohighlight">\(q\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(aSb\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(q\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\epsilon\)</span></p></td>
+<td><p>S</p></td>
+<td><p><span class="math notranslate nohighlight">\(q\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(ab\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(q\)</span></p></td>
+<td><p>a</p></td>
+<td><p>a</p></td>
+<td><p><span class="math notranslate nohighlight">\(q\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\epsilon\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(q\)</span></p></td>
+<td><p>b</p></td>
+<td><p>b</p></td>
+<td><p><span class="math notranslate nohighlight">\(q\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\epsilon\)</span></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Visual Flow:</strong></p>
+<figure class="align-center" id="id8">
+<div class="graphviz"><object data="_images/graphviz-a8f171003a9ef433ad009357a2684a3a85bd14fe.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph cfg_conversion {
+    rankdir=TB;
+    node [shape=box, style=&quot;rounded,filled&quot;, fillcolor=wheat];
+    edge [fontsize=9];
+
+    cfg [label=&quot;CFG\nS → aSb | ab&quot;];
+    step1 [label=&quot;Initialize\nPush 'S'&quot;, fillcolor=lightblue];
+    step2 [label=&quot;See rule S→aSb\nReplace&quot;, fillcolor=lightyellow];
+    step3 [label=&quot;Match 'a'\nPop 'a'&quot;, fillcolor=lightcyan];
+    step4 [label=&quot;Recursively\nreplace 'S'&quot;, fillcolor=lightyellow];
+    step5 [label=&quot;Match b's\nPop 'b'&quot;, fillcolor=lightcyan];
+    pda [label=&quot;PDA Accepts&quot;, fillcolor=lightgreen];
+
+    cfg -&gt; step1 -&gt; step2 -&gt; step3 -&gt; step4 -&gt; step5 -&gt; pda;
+}</p></object></div>
+<figcaption>
+<p><span class="caption-text">CFG to PDA Conversion Flow</span><a class="headerlink" href="#id8" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<hr class="docutils" />
+<section id="practice-problems-with-solutions">
+<h1>📝 Practice Problems with Solutions<a class="headerlink" href="#practice-problems-with-solutions" title="Link to this heading"></a></h1>
+<section id="practice-problem-1-design-pda-for-l-a-nb-m-mid-n-leq-m">
+<h2>Practice Problem 1: Design PDA for <span class="math notranslate nohighlight">\(L = \{a^nb^m \mid n \leq m\}\)</span><a class="headerlink" href="#practice-problem-1-design-pda-for-l-a-nb-m-mid-n-leq-m" title="Link to this heading"></a></h2>
+<p><strong>Question</strong>: Design a PDA that accepts strings where the number of a’s is <strong>less than or equal to</strong> the number of b’s.</p>
+<ul class="simple">
+<li><p>✓ <code class="docutils literal notranslate"><span class="pre">ab</span></code></p></li>
+<li><p>✓ <code class="docutils literal notranslate"><span class="pre">abb</span></code></p></li>
+<li><p>✓ <code class="docutils literal notranslate"><span class="pre">aabb</span></code></p></li>
+<li><p>✓ <code class="docutils literal notranslate"><span class="pre">b</span></code></p></li>
+<li><p>✗ <code class="docutils literal notranslate"><span class="pre">aabb</span></code> where n &gt; m</p></li>
+</ul>
+<p><strong>Your turn! Try before looking at solution.</strong></p>
+<div class="hint admonition">
+<p class="admonition-title">💡 Hint</p>
+<p>What’s different from <span class="math notranslate nohighlight">\(a^nb^n\)</span>? Here b’s can be <strong>extra</strong>. So what happens to extra b’s?</p>
+</div>
+<details>
+<summary><strong>✅ SOLUTION (Click to Expand)</strong></summary><div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Strategy:
+- Push one symbol for each &#39;a&#39;
+- Pop one symbol for each &#39;b&#39;
+- EXTRA b&#39;s: just read them (no pop)
+- Accept when input ends
+
+Key Insight: We don&#39;t reject if extra b&#39;s are left to read!
+
+Transitions:
+δ(q₀, a, Z₀) → (q₁, aZ₀)         [First &#39;a&#39;: push]
+δ(q₁, a, a) → (q₁, aa)           [More a&#39;s: push]
+δ(q₁, b, a) → (q₁, ε)            [Pop for b]
+δ(q₁, b, Z₀) → (q₁, Z₀)          [Extra b: ignore]
+δ(q₁, ε, Z₀) → (q₂, Z₀)          [Accept]
+
+State Diagram:
+
+                   a,Z₀→aZ₀
+     q₀ ──────────────→ q₁ ←──────┐
+                       ↙ ↘        │
+                   a,a/aa  b,a/ε  │
+                       ↙ ↘        │
+                   b,Z₀/Z₀ ───────┘
+                   ε,Z₀/Z₀
+                       ↓
+                       q₂ (accept)
+</pre></div>
+</div>
+</details></section>
+<hr class="docutils" />
+<section id="practice-problem-2-write-cfg-for-l-a-mb-n-mid-m-n-geq-0">
+<h2>Practice Problem 2: Write CFG for <span class="math notranslate nohighlight">\(L = \{a^mb^n \mid m,n \geq 0\}\)</span><a class="headerlink" href="#practice-problem-2-write-cfg-for-l-a-mb-n-mid-m-n-geq-0" title="Link to this heading"></a></h2>
+<p><strong>Question</strong>: Write a Context-Free Grammar for any number of a’s followed by any number of b’s (including empty strings).</p>
+<ul class="simple">
+<li><p>✓ <code class="docutils literal notranslate"><span class="pre">ε</span></code> (empty)</p></li>
+<li><p>✓ <code class="docutils literal notranslate"><span class="pre">aaa</span></code></p></li>
+<li><p>✓ <code class="docutils literal notranslate"><span class="pre">bbb</span></code></p></li>
+<li><p>✓ <code class="docutils literal notranslate"><span class="pre">aaabbb</span></code></p></li>
+<li><p>✓ <code class="docutils literal notranslate"><span class="pre">a</span></code></p></li>
+<li><p>✓ <code class="docutils literal notranslate"><span class="pre">b</span></code></p></li>
+</ul>
+<p><strong>Your turn!</strong></p>
+<div class="hint admonition">
+<p class="admonition-title">💡 Hint</p>
+<p>You need <strong>three</strong> productions: one for a’s, one for b’s, one to combine them.</p>
+</div>
+<details>
+<summary><strong>✅ SOLUTION (Click to Expand)</strong></summary><div class="highlight-text notranslate"><div class="highlight"><pre><span></span>CFG Solution:
+
+S → AB
+A → aA | ε
+B → bB | ε
+
+Explanation:
+- S generates the whole string (a&#39;s then b&#39;s)
+- A generates zero or more a&#39;s
+- B generates zero or more b&#39;s
+
+Example derivations:
+S ⇒ AB ⇒ aAB ⇒ aaAB ⇒ aaAB ⇒ aaB
+  ⇒ aabB ⇒ aabbB ⇒ aabb
+
+Result: &quot;aabb&quot; ✓
+</pre></div>
+</div>
+</details></section>
+<hr class="docutils" />
+<section id="practice-problem-3-convert-cfg-to-pda">
+<h2>Practice Problem 3: Convert CFG to PDA<a class="headerlink" href="#practice-problem-3-convert-cfg-to-pda" title="Link to this heading"></a></h2>
+<p><strong>Question</strong>: Convert this CFG to a PDA:</p>
+<div class="math notranslate nohighlight">
+\[S \to aSb \mid \epsilon\]</div>
+<p><strong>Your turn! What are the transitions?</strong></p>
+<div class="hint admonition">
+<p class="admonition-title">💡 Hint</p>
+<p>You need states for: (1) Initialize S, (2) Apply productions, (3) Match terminals.</p>
+</div>
+<details>
+<summary><strong>✅ SOLUTION (Click to Expand)</strong></summary><div class="highlight-text notranslate"><div class="highlight"><pre><span></span>PDA Transitions:
+
+State: q (single state)
+
+1. δ(q, ε, S) → (q, aSb)    [Production: S → aSb]
+2. δ(q, ε, S) → (q, ε)      [Production: S → ε]
+3. δ(q, a, a) → (q, ε)      [Match terminal &#39;a&#39;]
+4. δ(q, b, b) → (q, ε)      [Match terminal &#39;b&#39;]
+
+Initial: q with S on stack
+Accept: when input AND stack are BOTH empty
+
+Trace for &quot;aabb&quot;:
+
+(q, aabb, S)
+  → (q, aabb, aSb)        [Apply S→aSb]
+  → (q, abb, Sb)          [Match &#39;a&#39;]
+  → (q, abb, aSbb)        [Apply S→aSb again]
+  → (q, bb, Sbb)          [Match &#39;a&#39;]
+  → (q, bb, ε bb)         [Apply S→ε]
+  → (q, b, bb)            [Match &#39;b&#39;]
+  → (q, ε, b)             [Match &#39;b&#39;]
+  ✗ FAIL: Stack not empty!
+
+Actually, let me retrace:
+(q, aabb, S)
+  → (q, aabb, aSb)       [S→aSb]
+  → (q, abb, Sb)         [Pop &#39;a&#39;]
+  → (q, abb, ε b)        [S→ε]
+  → (q, abb, b)          [Pop nothing]
+  ✓ ACCEPT (string matches production)
+</pre></div>
+</div>
+</details></section>
+<hr class="docutils" />
+<section id="practice-problem-4-trace-and-verify">
+<h2>Practice Problem 4: Trace and Verify<a class="headerlink" href="#practice-problem-4-trace-and-verify" title="Link to this heading"></a></h2>
+<p><strong>Question</strong>: Given string “aaabbb”, trace through the PDA for <span class="math notranslate nohighlight">\(a^nb^n\)</span> and determine if it’s accepted or rejected.</p>
+<p><strong>Show each step with:</strong>
+- Current state
+- Input remaining
+- Stack contents</p>
+<details>
+<summary><strong>✅ SOLUTION (Click to Expand)</strong></summary><div class="highlight-text notranslate"><div class="highlight"><pre><span></span>PDA for aⁿbⁿ:
+δ(q₀, a, Z₀) → (q₁, aZ₀)
+δ(q₁, a, a) → (q₁, aa)
+δ(q₁, b, a) → (q₁, ε)
+δ(q₁, ε, Z₀) → (q₂, Z₀)
+
+Trace for &quot;aaabbb&quot;:
+
+Step  State  Input      Stack      Action
+════════════════════════════════════════════════════════
+0     q₀     aaabbb     Z₀         Start
+1     q₁     aabbb      aZ₀        Read &#39;a&#39;, push &#39;a&#39;
+2     q₁     abbb       aaZ₀       Read &#39;a&#39;, push &#39;a&#39;
+3     q₁     bbb        aaaZ₀      Read &#39;a&#39;, push &#39;a&#39;
+4     q₁     bb         aaZ₀       Read &#39;b&#39;, pop &#39;a&#39;
+5     q₁     b          aZ₀        Read &#39;b&#39;, pop &#39;a&#39;
+6     q₁     ε          Z₀         Read &#39;b&#39;, pop &#39;a&#39;
+7     q₂     ε          Z₀         ε-transition, ACCEPT
+
+Result: ✓ ACCEPTED (3 a&#39;s matched 3 b&#39;s)
+</pre></div>
+</div>
+</details></section>
+<hr class="docutils" />
+<section id="practice-problem-5-language-recognition">
+<h2>Practice Problem 5: Language Recognition<a class="headerlink" href="#practice-problem-5-language-recognition" title="Link to this heading"></a></h2>
+<p><strong>Question</strong>: Can a PDA recognize <span class="math notranslate nohighlight">\(L = \{a^nb^nc^n \mid n \geq 1\}\)</span>?</p>
+<p>Why or why not?</p>
+<details>
+<summary><strong>✅ SOLUTION (Click to Expand)</strong></summary><div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Answer: NO ✗
+
+Reason: A PDA has only ONE stack, and you can only access the TOP.
+
+Why it fails:
+- Push for each &#39;a&#39; ✓
+- Pop for each &#39;b&#39; ✓
+- But then check &#39;c&#39;s:
+  - We&#39;ve already popped all a&#39;s from stack!
+  - Stack just has Z₀
+  - How do we verify c&#39;s match original a&#39;s?
+
+Example: &quot;aabbcc&quot; vs &quot;aabcc&quot;
+- Both: push 2, pop 2, read c&#39;s
+- But which one is correct?
+
+Solution: You need TWO stacks → Turing Machine!
+
+Key Learning: PDAs can match TWO related groups,
+              but NOT THREE independent groups.
+</pre></div>
+</div>
+</details></section>
+<hr class="docutils" />
+<section id="practice-problem-6-design-your-own-pda">
+<h2>Practice Problem 6: Design Your Own PDA<a class="headerlink" href="#practice-problem-6-design-your-own-pda" title="Link to this heading"></a></h2>
+<p><strong>Question</strong>: Design a PDA for <span class="math notranslate nohighlight">\(L = \{wcw^R \mid w \in \{a,b\}^*\}\)</span></p>
+<p>This is a <strong>palindrome with center marker ‘c’</strong></p>
+<ul class="simple">
+<li><p>✓ <code class="docutils literal notranslate"><span class="pre">c</span></code> (empty w)</p></li>
+<li><p>✓ <code class="docutils literal notranslate"><span class="pre">aca</span></code> (w = a)</p></li>
+<li><p>✓ <code class="docutils literal notranslate"><span class="pre">abcba</span></code> (w = ab)</p></li>
+<li><p>✗ <code class="docutils literal notranslate"><span class="pre">abccba</span></code> (doesn’t use center)</p></li>
+</ul>
+<p><strong>Strategy:</strong></p>
+<ol class="arabic simple">
+<li><p>Phase 1: Read left part, push to stack</p></li>
+<li><p>Phase 2: See ‘c’, switch mode</p></li>
+<li><p>Phase 3: Read right part, pop and match</p></li>
+</ol>
+<details>
+<summary><strong>✅ SOLUTION (Click to Expand)</strong></summary><div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Transitions:
+
+δ(q₀, a, Z₀) → (q₀, aZ₀)      [Push &#39;a&#39;]
+δ(q₀, b, Z₀) → (q₀, bZ₀)      [Push &#39;b&#39;]
+δ(q₀, a, a) → (q₀, aa)        [Push more]
+δ(q₀, a, b) → (q₀, ab)        [Push &#39;a&#39; on top of &#39;b&#39;]
+δ(q₀, b, a) → (q₀, ba)        [Push &#39;b&#39; on top of &#39;a&#39;]
+δ(q₀, b, b) → (q₀, bb)        [Push more]
+
+δ(q₀, c, Z₀) → (q₁, Z₀)       [See &#39;c&#39;, switch mode]
+δ(q₀, c, a) → (q₁, a)         [See &#39;c&#39; on non-empty stack]
+δ(q₀, c, b) → (q₁, b)         [See &#39;c&#39; on non-empty stack]
+
+δ(q₁, a, a) → (q₁, ε)         [Match &#39;a&#39;, pop]
+δ(q₁, b, b) → (q₁, ε)         [Match &#39;b&#39;, pop]
+
+δ(q₁, ε, Z₀) → (q₂, Z₀)       [Accept on empty stack]
+
+Trace for &quot;abcba&quot;:
+
+(q₀, abcba, Z₀)
+  → (q₀, bcba, aZ₀)           [Push &#39;a&#39;]
+  → (q₀, cba, baZ₀)           [Push &#39;b&#39;]
+  → (q₁, ba, baZ₀)            [Saw &#39;c&#39;, switch to q₁]
+  → (q₁, a, aZ₀)              [Match &#39;b&#39;, pop]
+  → (q₁, ε, Z₀)               [Match &#39;a&#39;, pop]
+  → (q₂, ε, Z₀)               [Accept]
+
+Result: ✓ ACCEPTED
+</pre></div>
+</div>
+</details></section>
+<hr class="docutils" />
+<section id="practice-problem-7-multiple-choice">
+<h2>Practice Problem 7: Multiple Choice<a class="headerlink" href="#practice-problem-7-multiple-choice" title="Link to this heading"></a></h2>
+<p><strong>Question</strong>: Which string is accepted by PDA for <span class="math notranslate nohighlight">\(a^nb^nc^n\)</span>?</p>
+<ol class="upperalpha simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">aabbcc</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">aaabbbccc</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span> <span class="pre">of</span> <span class="pre">them</span></code></p></li>
+</ol>
+<details>
+<summary><strong>✅ SOLUTION (Click to Expand)</strong></summary><div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Answer: C) None of them ✗
+
+Explanation:
+A PDA with ONE stack cannot verify THREE equal-length groups.
+
+aabbcc:
+- Stack after a&#39;s: [a, a, Z₀]
+- After matching b&#39;s: [Z₀]
+- How to verify 2 c&#39;s match? Stack is already empty!
+
+Conclusion: This language is NOT context-free.
+It requires a Turing Machine (2+ stacks or unlimited memory).
+</pre></div>
+</div>
+</details></section>
+</section>
+<hr class="docutils" />
+<section id="quick-reference-table">
+<h1>📊 Quick Reference Table<a class="headerlink" href="#quick-reference-table" title="Link to this heading"></a></h1>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 30.0%" />
+<col style="width: 20.0%" />
+<col style="width: 30.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Language</p></th>
+<th class="head"><p>Notation</p></th>
+<th class="head"><p>Can PDA do it?</p></th>
+<th class="head"><p>Reason</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Equal a’s and b’s</p></td>
+<td><p><span class="math notranslate nohighlight">\(a^nb^n\)</span></p></td>
+<td><p>✓ YES</p></td>
+<td><p>Stack matches pairs</p></td>
+</tr>
+<tr class="row-odd"><td><p>More b’s than a’s</p></td>
+<td><p><span class="math notranslate nohighlight">\(a^nb^m (n&lt;m)\)</span></p></td>
+<td><p>✓ YES</p></td>
+<td><p>Stack can ignore extras</p></td>
+</tr>
+<tr class="row-even"><td><p>Three equal groups</p></td>
+<td><p><span class="math notranslate nohighlight">\(a^nb^nc^n\)</span></p></td>
+<td><p>✗ NO</p></td>
+<td><p>Only 1 stack, not enough</p></td>
+</tr>
+<tr class="row-odd"><td><p>Palindromes</p></td>
+<td><p><span class="math notranslate nohighlight">\(wcw^R\)</span></p></td>
+<td><p>✓ YES</p></td>
+<td><p>Push then pop in reverse</p></td>
+</tr>
+<tr class="row-even"><td><p>Balanced parens</p></td>
+<td><p><span class="math notranslate nohighlight">\((^n)^n\)</span></p></td>
+<td><p>✓ YES</p></td>
+<td><p>Push ( pop )</p></td>
+</tr>
+<tr class="row-odd"><td><p>Nested parens</p></td>
+<td><p><span class="math notranslate nohighlight">\((((...)))\)</span></p></td>
+<td><p>✓ YES</p></td>
+<td><p>Stack tracks nesting</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<hr class="docutils" />
+<section id="common-mistakes-to-avoid">
+<h1>💡 Common Mistakes to Avoid<a class="headerlink" href="#common-mistakes-to-avoid" title="Link to this heading"></a></h1>
+<p><strong>Mistake 1: Forgetting to initialize stack</strong></p>
+<p>❌ Wrong: Start with empty stack
+✓ Correct: Start with <span class="math notranslate nohighlight">\(Z_0\)</span> symbol</p>
+<p><strong>Mistake 2: Popping when stack is empty</strong></p>
+<p>❌ Wrong: Pop ‘a’ when stack has ‘Z₀’
+✓ Correct: Define separate transition for <span class="math notranslate nohighlight">\(Z_0\)</span></p>
+<p><strong>Mistake 3: Not accepting on empty input</strong></p>
+<p>❌ Wrong: Accept only when stack is empty
+✓ Correct: Accept when BOTH input AND stack are empty</p>
+<p><strong>Mistake 4: Confusing PDA limitations</strong></p>
+<p>❌ Wrong: “PDA can recognize anything”
+✓ Correct: “PDA recognizes context-free languages only”</p>
+<p><strong>Mistake 5: Wrong transition notation</strong></p>
+<p>❌ Wrong: <span class="math notranslate nohighlight">\(\delta(q, a, X) \to (p, Y, Z)\)</span> (4 things)
+✓ Correct: <span class="math notranslate nohighlight">\(\delta(q, a, X) \to (p, YZ)\)</span> (state, stack action)</p>
+</section>
+<hr class="docutils" />
+<section id="key-takeaways">
+<h1>🎯 Key Takeaways<a class="headerlink" href="#key-takeaways" title="Link to this heading"></a></h1>
+<div class="important admonition">
+<p class="admonition-title">✅ Remember This!</p>
+<ol class="arabic simple">
+<li><p><strong>PDA = FA + Stack</strong>: Adds ONE memory structure</p></li>
+<li><p><strong>Stack Operations</strong>: PUSH, POP, or leave alone (3 choices per transition)</p></li>
+<li><p><strong>Acceptance</strong>: Input CONSUMED + Stack EMPTY = Accept</p></li>
+<li><p><strong>Language Power</strong>: Context-Free Languages</p></li>
+<li><p><strong>Matching Pairs</strong>: PDAs excel at <span class="math notranslate nohighlight">\(a^nb^n\)</span> style patterns</p></li>
+<li><p><strong>Limitation</strong>: Only one stack (can’t do <span class="math notranslate nohighlight">\(a^nb^nc^n\)</span>)</p></li>
+<li><p><strong>CFG ↔ PDA</strong>: Equivalent power, different perspectives</p></li>
+</ol>
+</div>
+</section>
+<hr class="docutils" />
+<section id="next-steps">
+<h1>📖 Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h1>
+<ol class="arabic simple">
+<li><p><strong>Practice</strong> converting between CFG and PDA</p></li>
+<li><p><strong>Try harder</strong> languages like <span class="math notranslate nohighlight">\(a^nb^{2n}\)</span></p></li>
+<li><p><strong>Study</strong> when PDAs fail (e.g., <span class="math notranslate nohighlight">\(a^nb^nc^n\)</span>)</p></li>
+<li><p><strong>Learn</strong> Turing Machines for unlimited power</p></li>
+</ol>
+<hr class="docutils" />
+<p><em>End of Complete Guide for Beginners</em></p>
+<p>✨ <strong>Good luck with your studies!</strong> ✨</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(false);
+      });
+  </script> 
+
+</body>
+</html>
